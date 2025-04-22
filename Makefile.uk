@@ -1,0 +1,20 @@
+$(eval $(call addlib,appzighelloworld))
+
+APP_ZIG_OBJ := $(APPZIGHELLOWORLD_BASE)/zig-out/lib/app_zig.o
+
+ifeq ($(CONFIG_ARCH_X86_64),y)
+ZIG_TARGET := x86_64-freestanding
+else ifeq ($(CONFIG_ARCH_ARM_64),y)
+ZIG_TARGET := aarch64-freestanding
+else
+$(error unsupported architecture)
+endif
+
+.PHONY: zig_build
+
+zig_build:
+	zig build -Dtarget=$(ZIG_TARGET)
+
+UK_PREPARE-y += zig_build
+
+UK_OLIBS-y += $(APP_ZIG_OBJ)
