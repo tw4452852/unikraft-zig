@@ -12,7 +12,10 @@ git clone https://github.com/unikraft/unikraft ./workdir/unikraft
 make
 ```
 
-The generated image will be `./workdir/build/app-zig_<platform>-<arch>`.
+The generated image will be `./workdir/build/app-zig_<platform>-<arch>`,
+and you could run it with the qemu now (follow the instructions on https://unikraft.org/guides/internals#running).
+
+Have fun!
 
 ## Supported architectures
 - `aarch64`
