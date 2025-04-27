@@ -1,0 +1,28 @@
+diff --git a/lib/std/Thread.zig b/lib/std/Thread.zig
+index fe3bf0fcea..ed1dad5a9c 100644
+--- a/lib/std/Thread.zig
++++ b/lib/std/Thread.zig
+@@ -690,7 +690,9 @@ const PosixThreadImpl = struct {
+ 
+     fn getCurrentId() Id {
+         switch (native_os) {
+-            .linux => {
++            .linux => if (use_pthreads) {
++                return @truncate(@intFromPtr(c.pthread_self()));
++            } else {
+                 return LinuxThreadImpl.getCurrentId();
+             },
+             .macos, .ios, .watchos, .tvos, .visionos => {
+diff --git a/lib/std/debug/MemoryAccessor.zig b/lib/std/debug/MemoryAccessor.zig
+index 7857656554..bb89164ad4 100644
+--- a/lib/std/debug/MemoryAccessor.zig
++++ b/lib/std/debug/MemoryAccessor.zig
+@@ -20,7 +20,7 @@ mem: switch (native_os) {
+ 
+ pub const init: MemoryAccessor = .{
+     .mem = switch (native_os) {
+-        .linux => .{ .handle = -1 },
++        .linux => .{ .handle = -2 },
+         else => {},
+     },
+ };

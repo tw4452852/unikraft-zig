@@ -1,0 +1,20 @@
+menuconfig APPZIG
+  bool "Zig app"
+  default y
+  select LIBMUSL
+  select LIBUKVMEM
+  select PAGING
+  select LIBPOSIX_MMAP
+  imply PLAT_KVM
+
+if APPZIG
+
+config APPZIG_TEST_PATH
+  string "test file path"
+  default "$(CONFIG_APPZIG_BASE)/src/test.zig"
+
+config APPZIG_TEST_FILTER
+  string "test filter"
+  default ""
+
+endif

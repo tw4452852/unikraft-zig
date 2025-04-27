@@ -1,20 +1,32 @@
-$(eval $(call addlib,appzighelloworld))
+$(eval $(call addlib,appzig))
 
-APP_ZIG_OBJ := $(APPZIGHELLOWORLD_BASE)/zig-out/lib/app_zig.o
+HOST_ARCH ?= x86_64
+HOST_OS ?= linux
+ZIG_VERSION ?= 0.15.0-dev.386+2e35fdd03
+
+ZIG_URL=https://ziglang.org/builds/zig-$(HOST_OS)-$(HOST_ARCH)-$(ZIG_VERSION).tar.xz
+$(eval $(call fetch,zig,$(ZIG_URL)))
+
+ZIG_PATCHDIR=$(APPZIG_BASE)/patches
+$(eval $(call patch,zig,$(ZIG_PATCHDIR),zig-$(HOST_OS)-$(HOST_ARCH)-$(ZIG_VERSION))) 
+
+APP_ZIG_OBJ := $(APPZIG_BASE)/zig-out/lib/app_zig.o
+LIB_ZIG := $(APPZIG_BASE)/zig-out/lib/libzig.a
 
 ifeq ($(CONFIG_ARCH_X86_64),y)
-ZIG_TARGET := x86_64-freestanding
+ZIG_TARGET := x86_64-linux-musl
 else ifeq ($(CONFIG_ARCH_ARM_64),y)
-ZIG_TARGET := aarch64-freestanding
+ZIG_TARGET := aarch64-linux-musl
 else
 $(error unsupported architecture)
 endif
 
 .PHONY: zig_build
 
-zig_build:
-	zig build -Dtarget=$(ZIG_TARGET)
+zig_build: | $(ZIG_ORIGIN)/zig-$(HOST_OS)-$(HOST_ARCH)-$(ZIG_VERSION)/zig
+	$(ZIG_ORIGIN)/zig-$(HOST_OS)-$(HOST_ARCH)-$(ZIG_VERSION)/zig build -Dtarget=$(ZIG_TARGET) -Dtest=$(CONFIG_APPZIG_TEST_PATH) -Dtest_filter=$(CONFIG_APPZIG_TEST_FILTER)
 
 UK_PREPARE-y += zig_build
 
 UK_OLIBS-y += $(APP_ZIG_OBJ)
+UK_ALIBS-y += $(LIB_ZIG)
