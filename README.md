@@ -6,9 +6,8 @@
 ## Usage
 
 ```
-git clone https://github.com/tw4452852/unikraft-zig
+git clone --recurse-submodules https://github.com/tw4452852/unikraft-zig
 cd unikraft-zig
-git clone https://github.com/unikraft/unikraft ./workdir/unikraft
 make
 ```
 
