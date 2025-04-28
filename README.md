@@ -1,8 +1,5 @@
 # Create an unikernel with Unikraft and Zig
 
-## Prerequisites
-- Install Zig toolchain: https://ziglang.org/learn/getting-started/
-
 ## Usage
 
 ```
