@@ -9,6 +9,7 @@ $(eval $(call fetch,zig,$(ZIG_URL)))
 
 ZIG_PATCHDIR=$(APPZIG_BASE)/patches
 $(eval $(call patch,zig,$(ZIG_PATCHDIR),zig-$(HOST_OS)-$(HOST_ARCH)-$(ZIG_VERSION))) 
+ZIG_BIN ?= $(ZIG_ORIGIN)/zig-$(HOST_OS)-$(HOST_ARCH)-$(ZIG_VERSION)/zig
 
 APP_ZIG_OBJ := $(APPZIG_BASE)/zig-out/lib/app_zig.o
 LIB_ZIG := $(APPZIG_BASE)/zig-out/lib/libzig.a
@@ -23,8 +24,8 @@ endif
 
 .PHONY: zig_build
 
-zig_build: | $(ZIG_ORIGIN)/zig-$(HOST_OS)-$(HOST_ARCH)-$(ZIG_VERSION)/zig
-	$(ZIG_ORIGIN)/zig-$(HOST_OS)-$(HOST_ARCH)-$(ZIG_VERSION)/zig build -Dtarget=$(ZIG_TARGET) -Dtest=$(CONFIG_APPZIG_TEST_PATH) -Dtest_filter=$(CONFIG_APPZIG_TEST_FILTER)
+zig_build: $(ZIG_BIN)
+	$(ZIG_BIN) build -Dtarget=$(ZIG_TARGET) -Dtest=$(CONFIG_APPZIG_TEST_PATH) -Dtest_filter=$(CONFIG_APPZIG_TEST_FILTER)
 
 UK_PREPARE-y += zig_build
 
